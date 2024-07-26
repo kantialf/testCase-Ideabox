@@ -36,7 +36,7 @@ public class myIdeaTest {
         WebElement emailField = driver.findElement(By.name("email"));
         WebElement passwordFiled = driver.findElement(By.name("password"));
 
-        emailField.sendKeys("alifakanti@gmail.com");
+        emailField.sendKeys("innovator@example.com");
         passwordFiled.sendKeys("12345678");
 
         driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
@@ -52,11 +52,15 @@ public class myIdeaTest {
     public void TC_084() {
 
         //action button idea
-        WebElement btnAct = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[1]/div/div[2]/div/div[2]/div/span/button"));
+        WebElement btnAct = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[4]/div/div[2]/div/div[2]/div/span/button"));
         JavascriptExecutor executor = (JavascriptExecutor) driver;
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btnAct);
 
-        WebElement btnDelete = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[1]/div/div[2]/div/div[2]/div/div/button"));
+        //scroll to element
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("window.scrollBy(0,70)");
+        wait(2000);
+        WebElement btnDelete = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[4]/div/div[2]/div/div[2]/div/div/button"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btnDelete);
 
         //verify modal delete
@@ -65,15 +69,24 @@ public class myIdeaTest {
             System.out.println("[BUG] Modal delete tidak muncul");
         }
 
-        //button delete di moadal
+        //button delete di modal
         WebElement btnDelIdea = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div/button[2]"));
         btnDelIdea.click();
 
         wait(2000);
-        WebElement alertSuccessDel = driver.findElement(By.xpath("/html/body/div/div[2]/div"));
-        if (!alertSuccessDel.isDisplayed()) {
+        try{
+            WebElement alertSuccessDel = driver.findElement(By.xpath("/html/body/div/div[2]/div"));
+        } catch (Exception e) {
             System.out.println("[BUG] Alert sukses delete tidak muncul");
         }
+
+        //memastikan idea yang dihapus hilang dari field active idea
+        WebElement fieldIdea = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]"));
+        if (fieldIdea.getText().contains("Coba")) {
+            System.out.println("[BUG] Ide tidak terhapus dari active idea");
+        }
+
+        
     }
 
     @Test
@@ -93,9 +106,10 @@ public class myIdeaTest {
             System.out.println("[BUG] Modal delete tidak muncul");
         }
 
-        //button delete di moadal
+        //button delete di modal
         WebElement btnCancelDel = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div/button[1]"));
         btnCancelDel.click();
+        
 
     }
 
@@ -103,12 +117,12 @@ public class myIdeaTest {
     public void TC_086() {
 
         //action button idea
-        WebElement btnAct = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[1]/div/div[2]/div/div[2]/div/span/button"));
+        WebElement btnAct = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[2]/div/div[2]/div/div[2]/div/span/button"));
         JavascriptExecutor executor = (JavascriptExecutor) driver;
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btnAct);
 
         //button manage talent approval
-        WebElement btnMTA = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[1]/div/div[2]/div/div[2]/div/div/a[1]"));
+        WebElement btnMTA = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[1]/div[2]/div/div[2]/div/div[2]/div/div[2]/div/div/a[1]"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btnMTA);
 
         //verify halaman manage talent approval
@@ -117,7 +131,7 @@ public class myIdeaTest {
             System.out.println("[BUG] Halaman tidak mengarah ke manage talent approval");
         }
 
-        driver.quit();
+        
     }
 
     @Test
@@ -133,13 +147,13 @@ public class myIdeaTest {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", cardIdea);
 
         wait(3000);
-        //verify halaman manage talent approval
+        //verify halaman detail ide
         String currentUrl = driver.getCurrentUrl();
         if (!currentUrl.contains("https://km4.ideaboxapp.com/idea/detail")) {
             System.out.println("[BUG] Halaman tidak mengarah ke detail idea");
         }
 
-        driver.quit();
+        
     }
 
     @Test
@@ -178,7 +192,7 @@ public class myIdeaTest {
             System.out.println(String.format("[BUG] Verifikasi teks alert sukses send gagal. Teks seharusnya: %s, Teks sebenarnya: %s", expected2, actualText));
         }
 
-        driver.quit();
+        
     }
 
     @Test
@@ -209,7 +223,7 @@ public class myIdeaTest {
 
         wait(1000);
 
-        driver.quit();
+        
     }
 
     @Test
@@ -233,14 +247,24 @@ public class myIdeaTest {
             System.out.println("[BUG] Modal delete tidak muncul");
         }
 
-        //button delete di moadal
+        //button delete di modal
         WebElement btnDelIdea = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div/button[2]"));
         btnDelIdea.click();
 
-        //verify modal delete masih muncul
-        if (modalDel.isDisplayed()) {
-            System.out.println("[BUG] Modal delete masih muncul");
+        wait(2000);
+        try{
+            WebElement alertSuccessDel = driver.findElement(By.xpath("/html/body/div/div[2]/div"));
+        } catch (Exception e) {
+            System.out.println("[BUG] Alert sukses delete tidak muncul");
         }
+
+        //memastikan idea yang dihapus hilang dari field draft idea
+        WebElement fieldIdea = driver.findElement(By.xpath("/html/body/div/div/div/div/div/div[2]/nav/div/div/div[2]"));
+        if (fieldIdea.getText().contains("Draft 3")) {
+            System.out.println("[BUG] Ide tidak terhapus dari tab draft");
+        }
+
+        
     }
 
     @Test
@@ -267,6 +291,7 @@ public class myIdeaTest {
         //button delete di modal
         WebElement btnCancel = driver.findElement(By.xpath("/html/body/div[3]/div/div/div[2]/div/button[1]"));
         btnCancel.click();
+        
 
 //        wait(2000);
 //        //verify modal delete masih muncul
@@ -296,6 +321,8 @@ public class myIdeaTest {
         if (!currentUrl.contains("https://km4.ideaboxapp.com/talent-approval/detail")) {
             System.out.println("[BUG] Halaman tidak mengarah ke manage talent approval");
         }
-
+        
+        
+        
     }
 }

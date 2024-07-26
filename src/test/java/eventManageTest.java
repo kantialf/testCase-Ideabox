@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.*;
@@ -7,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 public class eventManageTest {
@@ -98,66 +100,61 @@ public class eventManageTest {
         // field fase 1
         WebElement fieldPhase1 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[1]"));
 
-//        //ngambil data jumlah ide awal fase 2
-//        WebElement totalIdeField2 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[2]/div[1]/div[1]/span"));
-//        String textTotalIde = totalIdeField2.getText();
-//        Integer intTotalIde = extractNumberFromText(textTotalIde);
-//
-//        //ngambil data jumlah ide awal fase 3
-//        WebElement totalIdeField3 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[3]/div/div[1]/span"));
-//        String textTotalIde3 = totalIdeField3.getText();
-//        Integer intTotalIde3 = extractNumberFromText(textTotalIde3);
+        wait(1000);
+        // Ngambil data jumlah ide awal fase 2
+        WebElement totalIdeField2 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[2]/div[1]/div[1]/span"));
+        String textTotalIde2 = totalIdeField2.getText();
+        int oldNumber2 = extractNumberFromText(textTotalIde2);
 
+        // Ngambil data jumlah ide awal fase 3
+        WebElement totalIdeField3 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[3]/div[1]/div[1]/span"));
+        String textTotalIde3 = totalIdeField3.getText();
+        int oldNumber3 = extractNumberFromText(textTotalIde3);
+
+        wait(3000);
         //drag n drop
         Actions actions = new Actions(driver);
-
         actions.clickAndHold(cardIdea).perform();
         wait(1000);
         actions.moveToElement(fieldPhase1).perform();
-//        actions.release(fieldPhase1).perform();
         actions.release(cardIdea).perform();
 
-//        //ngambil data jumlah ide fase 2 setelah
-//        String newText = totalIdeField2.getText();
-//        // Extract the new number
-//        int newNumber = extractNumberFromText(newText);
-//
-//        //ngambil data jumlah ide fase 3 setelah
-//        String newText2 = totalIdeField3.getText();
-//        // Extract the new number
-//        int newNumber2 = extractNumberFromText(newText2);
-//
-//        //verify
-//        // Compare the initial and new numbers
-//        if (newNumber > intTotalIde) {
-//        } else {
-//            System.out.println("[BUG] Total idea di Phase asal tidak berkurang.");
-//        }
-//
-//        // Compare the initial and new numbers
-//        if (newNumber2 < intTotalIde3) {
-//        } else {
-//            System.out.println("[BUG] Total idea di Phase tujuan tidak bertambah.");
-//        }
-
+        //        actions.release(fieldPhase1).perform();
         wait(2000);
+        // Ngambil data jumlah ide fase 2 setelah
+        String newText2 = totalIdeField2.getText();
+        int newNumber2 = extractNumberFromText(newText2);
+
+        // Ngambil data jumlah ide fase 3 setelah
+        String newText3 = totalIdeField3.getText();
+        int newNumber3 = extractNumberFromText(newText3);
+
+        // Verify
+        Assert.assertTrue("[BUG] Total idea di Phase asal tidak berkurang.", oldNumber2 > newNumber2);
+        Assert.assertTrue("[BUG] Total idea di Phase tujuan tidak bertambah.", oldNumber3 < newNumber3);
+
         //verify alert sukses drag and drop
         WebElement alertSuccessDrop = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
         if (!alertSuccessDrop.isDisplayed()){
             System.out.println("[BUG] Alert sukses drag and drop tidak muncul");
         }
-
-
+        String actualText3 = alertSuccessDrop.getText();
+        String expectedText3 = "Berhasil Mengupdate Fase Ide";
+        if (!expectedText3.equals(actualText3)) {
+            System.out.println(String.format("[BUG] Teks pada alert sukses drag and drop ide salah. Teks seharusnya: %s, Teks sebenarnya: %s.", expectedText3, actualText3));
+        }
+        driver.quit();
     }
 
     @Test
     public void TC_139() {
-        //Mengecek fungsi drag and drop idea ke fase event
+        //Mengecek fungsi drag and drop idea ke luar field fase event
 
         //verify element event management
         WebElement btnAddEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[1]/a"));
         WebElement cardEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[2]/div/a/div"));
 
+        wait(3000);
         if (!btnAddEvent.isDisplayed()) {
             System.out.println("[BUG] Button add event tidak ada");
         }
@@ -179,36 +176,53 @@ public class eventManageTest {
         // field luar
         WebElement fieldLuar = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/a/div"));
 
+        // Ngambil data jumlah ide awal fase 2
+        WebElement totalIdeField2 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[2]/div[1]/div[1]/span"));
+        String textTotalIde2 = totalIdeField2.getText();
+        int oldNumber2 = extractNumberFromText(textTotalIde2);
+
         //drag n drop
         Actions actions = new Actions(driver);
-
         actions.clickAndHold(cardIdea).perform();
         wait(1000);
         actions.moveToElement(fieldLuar).perform();
-//        actions.release(fieldPhase1).perform();
         actions.release(cardIdea).perform();
 
-//        //verify alert sukses drag and drop
-//        WebElement alertSuccessDrop = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
-//        if (!alertSuccessDrop.isDisplayed()){
-//            System.out.println("[BUG] Alert sukses drag and drop tidak muncul");
-//        }
+        wait(2000);
+        // Ngambil data jumlah ide fase 2 setelah
+        String newText2 = totalIdeField2.getText();
+        int newNumber2 = extractNumberFromText(newText2);
+
+        Assert.assertTrue("[BUG] Total idea di Phase 2 bertambah/berkurang.", oldNumber2 == newNumber2);
+
+        //verify alert error message drag and drop
+        WebElement alertSuccessDrop = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
+        if (!alertSuccessDrop.isDisplayed()){
+            System.out.println("[BUG] Alert sukses drag and drop tidak muncul");
+        }
+        String actualText = alertSuccessDrop.getText();
+        String expectedText = "Failed to move the idea";
+        if (!expectedText.equals(actualText)) {
+            System.out.println(String.format("[BUG] Teks pada alert error drag and drop ide salah. Teks seharusnya: %s, Teks sebenarnya: %s.", expectedText, actualText));
+        }
+        driver.quit();
     }
 
     @Test
     public void TC_140() {
-        //Mengecek fungsi drag and drop idea ke fase event
+        //Mengecek fungsi drag and drop beberapa idea sekaligus dengan checkbox pada idea yang berada di fase yang sama
 
         //verify element event management
         WebElement btnAddEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[1]/a"));
         WebElement cardEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[2]/div/a/div"));
 
-//        if (!btnAddEvent.isDisplayed()) {
-//            System.out.println("[BUG] Button add event tidak ada");
-//        }
-//        if (!cardEvent.isDisplayed()) {
-//            System.out.println("[BUG] Card event tidak ada");
-//        }
+        wait(3000);
+        if (!btnAddEvent.isDisplayed()) {
+            System.out.println("[BUG] Button add event tidak ada");
+        }
+        if (!cardEvent.isDisplayed()) {
+            System.out.println("[BUG] Card event tidak ada");
+        }
 
         //button action event
         WebElement btnActEvnt = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[2]/div/div/span/button"));
@@ -245,23 +259,30 @@ public class eventManageTest {
 //        actions.release(fieldPhase1).perform();
         actions.release(cardIdea).perform();
 
-        wait(2000);
+        wait(1000);
         //verify alert sukses drag and drop
         WebElement alertSuccessDrop = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
         if (!alertSuccessDrop.isDisplayed()){
             System.out.println("[BUG] Alert sukses drag and drop tidak muncul");
         }
+        String actualText3 = alertSuccessDrop.getText();
+        String expectedText3 = "Berhasil Mengupdate Fase Ide";
+        if (!expectedText3.equals(actualText3)) {
+            System.out.println(String.format("[BUG] Teks pada alert sukses drag and drop ide salah. Teks seharusnya: %s, Teks sebenarnya: %s.", expectedText3, actualText3));
+        }
+        driver.quit();
     }
 
     @Test
     public void TC_141() {
-        //Mengecek fungsi drag and drop idea ke fase event
+        //Mengecek fungsi drag and drop beberapa idea sekaligus dengan checkbox pada idea yang berada di fase berbeda
 
         wait(2000);
         //verify element event management
         WebElement btnAddEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[1]/a"));
         WebElement cardEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[2]/div/a/div"));
 
+        wait(3000);
         if (!btnAddEvent.isDisplayed()) {
             System.out.println("[BUG] Button add event tidak ada");
         }
@@ -305,13 +326,15 @@ public class eventManageTest {
         actions.release(cardIdea).perform();
 
         wait(2000);
-        //verify alert tidak bisa drag and drop
-        WebElement alertCantDrop = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/div[1]/div[2]"));
-        if (!alertCantDrop.isDisplayed()){
-            System.out.println("[BUG] Alert gagal drag and drop tidak muncul");
+        //verify alert error message drag and drop
+        WebElement alertSuccessDrop = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
+        if (!alertSuccessDrop.isDisplayed()) {
+            System.out.println("[BUG] Alert sukses drag and drop tidak muncul");
         }
-        if (!alertCantDrop.getText().contains("Cannot move items with different phase")){
-            System.out.println("[BUG] Teks pada alert gagal drag and drop salah.");
+        String actualText = alertSuccessDrop.getText();
+        String expectedText = "Cannot move items with different phase";
+        if (!expectedText.equals(actualText)) {
+            System.out.println(String.format("[BUG] Teks pada alert error drag and drop ide salah. Teks seharusnya: %s, Teks sebenarnya: %s.", expectedText, actualText));
         }
     }
 
@@ -324,6 +347,7 @@ public class eventManageTest {
         WebElement btnAddEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[1]/a"));
         WebElement cardEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[2]/div/a/div"));
 
+        wait(3000);
         if (!btnAddEvent.isDisplayed()) {
             System.out.println("[BUG] Button add event tidak ada");
         }
@@ -357,17 +381,19 @@ public class eventManageTest {
 
         String textAfter = fieldPhaseName.getText();
 
-        if (textAfter == textAfter){
+        if (textAfter == textBefore){
             System.out.println("[BUG] Event Phase Name tidak terubah");
         }
 
         wait(1000);
-        WebElement alertSuccess = driver.findElement(By.xpath("/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/*[name()='svg'][1]"));
+        WebElement alertSuccess = driver.findElement(By.xpath("/html/body/div[1]/div[2]"));
         if (!alertSuccess.isDisplayed()){
-            System.out.println("[BUG] Alert gagal drag and drop tidak muncul.");
+            System.out.println("[BUG] Alert sukses ubah nama event phase tidak muncul.");
         }
-        if (!alertSuccess.getText().contains("Success Updated")){
-            System.out.println("[BUG] Teks pada alert sukses update salah.");
+        String actualText = alertSuccess.getText();
+        String expectedText = "Success Updated";
+        if (!expectedText.equals(actualText)) {
+            System.out.println(String.format("[BUG] Teks pada alert sukses update salah. Teks seharusnya: %s, Teks sebenarnya: %s.", expectedText, actualText));
         }
     }
 
@@ -380,6 +406,7 @@ public class eventManageTest {
         WebElement btnAddEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[1]/a"));
         WebElement cardEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[2]/div/a/div"));
 
+        wait(2000);
         if (!btnAddEvent.isDisplayed()) {
             System.out.println("[BUG] Button add event tidak ada");
         }
@@ -413,52 +440,40 @@ public class eventManageTest {
         WebElement cardIdea = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[2]/div[2]"));
 
         // field fase 1
-        WebElement fieldPhase1 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[1]"));
+        WebElement fieldPhase3 = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[1]"));
 
         //drag n drop
         Actions actions = new Actions(driver);
 
-        actions.clickAndHold(cardIdea).perform();
-        wait(1000);
-        actions.moveToElement(fieldPhase1).perform();
+        try {
+            actions.clickAndHold(cardIdea).perform();
+            wait(1000);
+            actions.moveToElement(fieldPhase3).perform();
 //        actions.release(fieldPhase1).perform();
-        actions.release(cardIdea).perform();
+            actions.release(cardIdea).perform();
+        } finally {
 
+        }
         //ngambil data jumlah ide fase 2 setelah
         String newText = totalIdeField3.getText();
-        // Extract the new number
         int newNumber = extractNumberFromText(newText);
 
         //verify
-        // Compare the initial and new numbers
-        if (newNumber != intTotalIde) {
-            System.out.println("[BUG] Total idea di Phase asal tidak berkurang.");
-        }
-
-        //memastikan event masih dilock
-        // Refresh halaman
-        driver.navigate().refresh();
-
-        try {
-            // Tunggu hingga elemen muncul
-            WebElement lockSymbol = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[3]/div[1]/div[1]/svg"));
-            System.out.println("Element is present");
-        } catch (org.openqa.selenium.NoSuchElementException e) {
-            System.out.println("[BUG] Event phase tidak terkunci setelah direfresh.");
-        }
+        Assert.assertTrue("[BUG] Total idea di Phase asal bertambah/berkurang.", newNumber==intTotalIde);
 
         driver.quit();
     }
 
     @Test
     public void TC_144() {
-        //Mengunci event phase
+        //Membuka kunci event phase
 
         wait(2000);
         //verify element event management
         WebElement btnAddEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[1]/a"));
         WebElement cardEvent = driver.findElement(By.xpath("/html/body/div/div/div/div[2]/div/div[3]/div/div/div[1]/div[2]/div/a/div"));
 
+        wait(2000);
         if (!btnAddEvent.isDisplayed()) {
             System.out.println("[BUG] Button add event tidak ada");
         }
@@ -515,21 +530,9 @@ public class eventManageTest {
 
         //verify
         // Compare the initial and new numbers
-        if (newNumber != intTotalIde) {
+        if (newNumber == intTotalIde) {
             System.out.println("[BUG] Total idea di Phase asal tidak berkurang.");
         }
 
-        //memastikan event phase sudah tidak dilock
-        // Refresh halaman
-
-        try {
-            // Tunggu hingga elemen muncul
-            WebElement lockSymbol = driver.findElement(By.xpath("/html/body/div[1]/div/div/div[2]/div/div[2]/div/div/div[3]/div/div/div[3]/div[1]/div[1]/svg"));
-            System.out.println("[BUG] Event phase tidak terkunci setelah direfresh.");
-        } catch (org.openqa.selenium.NoSuchElementException e) {
-
-        }
-
-        driver.quit();
     }
 }
